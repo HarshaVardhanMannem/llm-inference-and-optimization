@@ -9,6 +9,7 @@ A collection of experiments exploring techniques to make large language models s
 | Folder | Topic | Notebook |
 |--------|-------|----------|
 | [`distillation/`](distillation/) | Knowledge Distillation (BERT → DistilBERT) | [`bert_distillbert_knowledge_distillation.ipynb`](distillation/bert_distillbert_knowledge_distillation.ipynb) |
+| [`purning/`](purning/) | LLM Pruning From First Principles | [`llm_pruning_from_first_principles.ipynb`](purning/llm_pruning_from_first_principles.ipynb) |
 
 ---
 
@@ -52,14 +53,49 @@ Binary sentiment classification on the **SST-2** dataset (Stanford Sentiment Tre
 
 ---
 
+### 2. LLM Pruning — From First Principles
+
+**Notebook:** [`purning/llm_pruning_from_first_principles.ipynb`](purning/llm_pruning_from_first_principles.ipynb)
+
+A complete pruning pipeline for transformer-based language models built from scratch, covering theory, implementation, benchmarking, and industry context.
+
+#### Model
+`distilgpt2` — small enough to run on CPU; architecturally identical to GPT-2 and representative of modern transformer decoders.
+
+#### Techniques Implemented
+| Technique | Description |
+|-----------|-------------|
+| **Unstructured magnitude pruning** | Global weight zeroing by magnitude threshold (no `torch.nn.utils.prune`) |
+| **Structured pruning** | Remove entire attention heads (by output-projection L1 norm) and MLP neurons (by activation magnitude) |
+| **Wanda-style activation-weighted pruning** | Score weights by `\|w\| × \|activation\|` for calibration-guided sparsity |
+| **Iterative pruning** | Incremental sparsity steps to minimise accuracy degradation |
+
+#### Key Highlights
+- **Why pruning works:** over-parameterisation, the Lottery Ticket Hypothesis, and weight redundancy explained
+- **Benchmarks:** latency, model size, and throughput measured at every sparsity level (0 % → 90 %)
+- **Industry survey:** SparseGPT, Wanda, NVIDIA 2:4 structured sparsity, LLM Pruner, ShortGPT/Layer Dropping
+
+#### Industry Techniques Covered
+
+| Technique | Sparsity Type | Needs Fine-tune? | Best For |
+|-----------|--------------|-----------------|----------|
+| SparseGPT | Unstructured | No | Large models, single-shot |
+| Wanda | Unstructured | No | Fast application, near-SparseGPT quality |
+| NVIDIA 2:4 | Semi-structured | Yes (brief) | Ampere+ GPUs, production |
+| LLM Pruner | Structured | Yes | Edge deployment |
+| ShortGPT | Layer-level | No | Latency-critical inference |
+
+---
+
 ## Techniques Covered (so far)
 
 - [x] Knowledge Distillation
 - [x] Post-training Quantization (INT8, 4-bit via BitsAndBytes)
+- [x] Pruning (unstructured, structured, activation-guided, iterative)
 
 ## Planned / Coming Soon
 
-- [ ] Pruning
+- [ ] Pruning (advanced — SparseGPT, 2:4 structured)
 - [ ] Speculative Decoding
 - [ ] KV-Cache optimizations
 - [ ] LoRA / QLoRA fine-tuning
@@ -91,6 +127,8 @@ jupyter notebook distillation/bert_distillbert_knowledge_distillation.ipynb
 llm-inference-and-optimization/
 ├── distillation/
 │   └── bert_distillbert_knowledge_distillation.ipynb
+├── purning/
+│   └── llm_pruning_from_first_principles.ipynb
 └── README.md
 ```
 
