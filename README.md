@@ -55,7 +55,7 @@ The goal is for each technique to be reproducible end-to-end, and for the README
 | # | Technique | Model pair | Trainable params | Result | Notebook |
 |---|---|---|---:|---|---|
 | 1 | Classic Knowledge Distillation | BERT-base → DistilBERT | ~67 M (full) | 90.4 % SST-2 acc, **2.7× faster** GPU inference, 39 % smaller | [`distillation/bert_distillbert_knowledge_distillation.ipynb`](distillation/bert_distillbert_knowledge_distillation.ipynb) |
-| 2 | GKD + QLoRA Distillation | Qwen2.5-Coder 14B → 7B | 40.4 M LoRA (**0.53 %**) | LoRA adapter [published on the Hub](https://huggingface.co/Harsha901/qwen2.5-coder-7b-distilled-from-14b); fits on a single A100 80 GB | [`distillation/Code_Distillation.ipynb`](distillation/Code_Distillation.ipynb) |
+| 2 | GKD + QLoRA Distillation | Qwen2.5-Coder 14B → 7B | 40.4 M LoRA (**0.53 %**) | LoRA adapter [published on the Hub](https://huggingface.co/Harsha901/qwen2.5-coder-7b-distilled-from-14b); fits on a single A100 80 GB | [`distillation/qwen2.5_coder_14b_to_7b_code_distillation.ipynb`](distillation/qwen2.5_coder_14b_to_7b_code_distillation.ipynb) |
 | 3 | Pruning (from first principles) | — | — | Walk-through of magnitude / structured pruning intuition | [`purning/llm_pruning_from_first_principles.ipynb`](purning/llm_pruning_from_first_principles.ipynb) |
 
 ---
@@ -88,7 +88,7 @@ jupyter notebook distillation/bert_distillbert_knowledge_distillation.ipynb
 ```bash
 pip install -q trl transformers datasets accelerate bitsandbytes peft torch
 pip install -q -U huggingface_hub
-jupyter notebook distillation/Code_Distillation.ipynb
+jupyter notebook distillation/qwen2.5_coder_14b_to_7b_code_distillation.ipynb
 ```
 
 > Set your Hugging Face token via the `HF_TOKEN` env var, the Colab Secrets sidebar (`Tools → Secrets → HF_TOKEN`), or the interactive `getpass()` prompt the notebook will fall back to. **Never paste the token into the notebook directly.**
@@ -141,7 +141,7 @@ Compresses a fine-tuned BERT-base teacher into a DistilBERT student on SST-2 sen
 
 ### 2. Code Distillation — Qwen2.5-Coder 14B → 7B (GKD + QLoRA)
 
-**Notebook:** [`distillation/Code_Distillation.ipynb`](distillation/Code_Distillation.ipynb)
+**Notebook:** [`distillation/qwen2.5_coder_14b_to_7b_code_distillation.ipynb`](distillation/qwen2.5_coder_14b_to_7b_code_distillation.ipynb)
 **Adapter on the Hub:** [`Harsha901/qwen2.5-coder-7b-distilled-from-14b`](https://huggingface.co/Harsha901/qwen2.5-coder-7b-distilled-from-14b)
 
 Scales the same idea to a billion-parameter code model: distill `Qwen/Qwen2.5-Coder-14B-Instruct` into `Qwen/Qwen2.5-Coder-7B-Instruct` with **TRL's `DistillationTrainer` (GKD)** on top of **QLoRA**, so both models fit on a single A100 80 GB.
@@ -214,7 +214,7 @@ A from-first-principles walk-through of pruning for transformers — magnitude p
 llm-inference-and-optimization/
 ├── distillation/
 │   ├── bert_distillbert_knowledge_distillation.ipynb   # Experiment 1 — classic KD on SST-2
-│   ├── Code_Distillation.ipynb                          # Experiment 2 — Qwen 14B → 7B (GKD + QLoRA)
+│   ├── qwen2.5_coder_14b_to_7b_code_distillation.ipynb                          # Experiment 2 — Qwen 14B → 7B (GKD + QLoRA)
 │   └── KNOWLEDGE_DISTILLATION_GUIDE.md                  # Background reading on KD techniques
 ├── purning/
 │   └── llm_pruning_from_first_principles.ipynb         # Experiment 3 — pruning primer
